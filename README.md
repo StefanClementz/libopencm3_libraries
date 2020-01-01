@@ -1,2 +1,5 @@
 # libopencm3
-random libopencm3 tests
+
+Random libraries based on OpenCM3. Currently contains
+
+FrSky SBUS library
