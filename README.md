@@ -2,4 +2,4 @@
 
 Random libraries based on OpenCM3. Currently contains
 
-* FrSky SBUS library
+* FrSky SBUS library (platformio project)
