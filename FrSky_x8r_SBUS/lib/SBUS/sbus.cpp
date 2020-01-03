@@ -4,7 +4,7 @@ static uint32_t DMA_data[13]; //reserve 13x2x2=26x2 (need 25x2) pieces of concur
 
 static volatile uint8_t head_B; // sbus header byte, expect 0x0F
 static volatile uint8_t foot_B; // sbus footer byte, expect 0x00
-static volatile uint16_t sbus_chn[16]; //16 channels, 11 bits per channel
+static volatile uint16_t SB_cn[16]; //16 channels, 11 bits per channel
 static volatile uint16_t byte_17; // for digital channels 17/18, failsafe and lost frame flags
 
 
@@ -15,7 +15,7 @@ void sbus_setup()
     rcc_periph_clock_enable(RCC_USART1); // enable USART
     rcc_periph_clock_enable(RCC_DMA1); // enable DMA
     rcc_periph_clock_enable(RCC_GPIOA); // enable GPIOA
-    gpio_set_mode(GPIOA, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, GPIO_USART1_RX); // enable USART1_RX pin
+    gpio_set_mode(GPIO_BANK_USART1_RX, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN, GPIO_USART1_RX); // enable USART1_RX pin
     rcc_periph_clock_enable(RCC_TIM4); // enable timer 4
     nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ); //Enable DMA interrupt in nvic
     nvic_enable_irq(NVIC_TIM4_IRQ); //Enable tim4 interrupt in nvic
@@ -99,21 +99,21 @@ void dma1_channel5_isr()
 
             if (Nb > 7)
             {
-                // if Nb == 11, clear sbus channel and write
-                (Nb == 11) ? sbus_chn[chn] = DB : sbus_chn[chn] |= DB<<(11-Nb);
+                // if Nb == 11, clear sbus channel and write, else add
+                (Nb == 11) ? SB_cn[chn] = DB : SB_cn[chn] |= DB<<(11-Nb);
                 Nb = Nb - 8;
                 if (Nb == 0)
                 {
-                    Nb == 11;
+                    Nb = 11;
                     chn++;
                 }
             }
             else
             {
                 uint8_t nbits = bitseq(Nb);
-                sbus_chn[chn] |= ((DB & nbits) << (11-Nb)); //eats Nb bits, 8-Nb bits left
+                SB_cn[chn] |= ((DB & nbits) << (11-Nb)); //eats Nb bits, 8-Nb bits left
                 chn++;
-                sbus_chn[chn] = (DB & (0xFF & ~nbits)); // clear sbus_chn and put in remaining bits
+                SB_cn[chn] = (DB & (0xFF & ~nbits)); // clear SB_cn and put in remaining bits
                 Nb = 11-(8-Nb);
             }
         }
@@ -137,10 +137,10 @@ void dma1_channel5_isr()
 
 uint16_t bitseq(int n)
 {
-    uint16_t bitter = 0b1;
-    for (int i=1; i < n; i++)
+    uint16_t bitter = 0;
+    for (int i=0; i < n; i++)
     {
-        bitter = (bitter << 1) | 0b1;
+        bitter |= 0b1 << i;
     }
     return bitter;
 }
@@ -151,4 +151,10 @@ void tim4_isr()
     timer_clear_flag(TIM4,TIM_SR_UIF);
     usart_enable(USART1); // reenable USART1
     DMA_setup(); // Reset DMA
+}
+
+
+uint16_t sbus_chn(int chn)
+{
+    return (uint16_t)SB_cn[chn];
 }

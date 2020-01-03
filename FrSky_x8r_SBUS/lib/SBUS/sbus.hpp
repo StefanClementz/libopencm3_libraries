@@ -13,6 +13,13 @@ extern "C"
 }
 
 
+#define SBUS_THR 0
+#define SBUS_ROLL 1
+#define SBUS_PITCH 2
+#define SBUS_YAW 3
+
+
+
 void sbus_setup();
 void DMA_setup();
 void USART_setup();
@@ -20,7 +27,7 @@ void TIM4_setup();
 
 
 // ---------- random crap functions ----------
-uint16_t bitseq(int n); //Generate n ones binary sequence
-
+uint16_t bitseq(int n); // Generate binary sequence of n ones
+uint16_t sbus_chn(int chn); // Return sbus channel value
 
 #endif
