@@ -16,5 +16,5 @@ Used for NOT gate:
 NOT gate inverts the SBUS signal into USART. DMA is triggered on byte recieved and interrupt is thrown after all 25 bytes are recieved. 
 
 
-#In case anyone reads this:
+## In case anyone reads this:
 I'm not quite sure how to deal with channel 17, 18, and the frame lost / fail safe flags that arrive in bit 17. If you know or have a source, please let me know.
