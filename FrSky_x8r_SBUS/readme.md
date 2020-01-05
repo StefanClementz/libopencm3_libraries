@@ -6,7 +6,7 @@ This SBUS library is written for a STM32F103C8T6 microcontroller.
 - Timer 4
 
 ### GPIO pins:
-- GPIO_USART1_RX (my muC; GPIOA, pin10)
+- GPIO_USART1_RX
 
 Used for NOT gate:
 - 3.3V pin
