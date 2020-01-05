@@ -13,8 +13,8 @@ Used for NOT gate:
 - G pin
 
 ## code:
-NOT gate inverts the SBUS signal into USART. DMA is triggered on byte recieved and interrupt is thrown after all 25 bytes are recieved. 
+NOT gate inverts the SBUS signal into USART. DMA is triggered on byte recieved and a DMA interrupt is thrown after all bytes are recieved. Interrupt routine sorts recieved bytes to construct the appropriate channels.
 
 
 ## In case anyone reads this:
-I'm not quite sure how to deal with channel 17, 18, and the frame lost / fail safe flags that arrive in bit 17. If you know or have a source, please let me know.
+I'm not quite sure how to deal with the digital channels 17, 18, and the frame lost / fail safe flags that arrive in bit 17. If you know or have a source, please let me know.
